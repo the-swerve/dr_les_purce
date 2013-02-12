@@ -23,7 +23,6 @@ def generate_evergreen_class(matches, messenger):
 
 
 def random_response(matches, messenger):
-	" Les Purce is insulted. "
 	return random.choice([generate_evergreen_class(matches,messenger), insulted(matches,messenger), generic(matches,messenger)])
 
 def generic(matches, messenger):
