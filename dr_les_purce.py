@@ -34,10 +34,6 @@ def insulted(matches, messenger):
 def is_420():
 	return time.strftime("%H%M") == "1620"
 
-def wat(matches, messenger):
-	return random.choice([insulted(None,None),get_evergreen_class(None,None)])
-	
-
 bot = Bot('irc.freenode.net',6667,'DrLesPurce_test','les','Dr Les Purce (bot)')
 bot.join('#jayparty')
 bot.bind('DrLesPurce_test:.*fuck(ing)?|shit|dammit|damn|stupid|dumb|lame.*', insulted)
