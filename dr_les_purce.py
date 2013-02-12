@@ -16,29 +16,29 @@ JAMES = "<title>:=<zzz> : <zzz>|<zzz>\n" + \
 
 # here are two functions I added to do class title generation --boomzilla
 def parse_grammar(grammar):
-    #this function converts the grammar string
-    #into a dictionary, with the rules as keys,
-    #returns the dictionary
-    lines = grammar.splitlines()
-    grammar_dict = {}
-    for line in lines:
-        line_split = line.split(":=")
-        grammar_dict[line_split[0]] = line_split[1].split("|")
-    return grammar_dict
+	#this function converts the grammar string
+	#into a dictionary, with the rules as keys,
+	#returns the dictionary
+	lines = grammar.splitlines()
+	grammar_dict = {}
+	for line in lines:
+		line_split = line.split(":=")
+		grammar_dict[line_split[0]] = line_split[1].split("|")
+	return grammar_dict
 
 def generate_sentence(grammar_dict, rule):
-    #this function returns a randomly generated
-    #string based on the passed grammar
-    g_list = grammar_dict.get(rule)
-    g_string = random.choice(g_list)
-    to_return = ""
-    sub_list = g_string.split()
-    for rule in sub_list:
-            if (rule[0] == "<"):
-                to_return += generate_sentence(grammar_dict, rule)
-            else:
-                to_return += rule + " "
-    return to_return
+	#this function returns a randomly generated
+	#string based on the passed grammar
+	g_list = grammar_dict.get(rule)
+	g_string = random.choice(g_list)
+	to_return = ""
+	sub_list = g_string.split()
+	for rule in sub_list:
+		if (rule[0] == "<"):
+			to_return += generate_sentence(grammar_dict, rule)
+		else:
+			to_return += rule + " "
+	return to_return
 
 def generate_evergreen_class(matches, messenger):
 	# todo: add more formats than just 'from adj noun towards adj noun' (adj noun and adj noun, adj noun based on adj noun, adj noun, etc)
