@@ -7,6 +7,7 @@ class Bot:
 		self.irc.send('USER ' + ((username + ' ')*3) + ':' + ircname + '\r\n') 
 		self.irc.send('NICK ' + nick + '\r\n')
 		self.bindings = {}
+		self.patterns = [] # store an ordered list of patterns.
 		self.conditions = {}
 		self.state = {}
 
@@ -18,6 +19,7 @@ class Bot:
 
 	def bind(self,pattern,response):
 		"Bind a matched regex to a response"
+		self.patterns.append(pattern)
 		self.bindings[pattern] = response
 		return self
 
@@ -38,13 +40,14 @@ class Bot:
 		"""
 		if hasattr(response, '__call__'): # is function object?
 			try:
-				print('Responding: ' + response(*args))
-				self.irc.send('PRIVMSG '+self.chan+' :'+response(*args)+'\n') # apply function to regex matches
+				r = response(*args)
+				print('Dynamic response: ' + r)
+				self.irc.send('PRIVMSG '+self.chan+' :'+r+'\n') # apply function to regex matches
 			except:
-				print('Reponse threw exception: ', sys.exc_info()[:2], 'line ' + str(sys.exc_info()[2].tb_lineno))
+				print('Reponse threw exception: ', sys.exc_info()[:2], 'line ' + str(sys.exc_info()[2]))
 				return
 		else:
-			print('Responding: ' + response)
+			print('Static response: ' + response)
 			self.irc.send('PRIVMSG '+self.chan+' :'+response+'\n') # just send string
 
 	def live(self):
@@ -57,11 +60,13 @@ class Bot:
 			if data.find("PING :") != -1: self.irc.send("PONG :pings\n")
 			# Respond to messages.
 			elif data.find(' PRIVMSG ' + self.chan) != -1:
-				for pattern, response in self.bindings.iteritems():
-					matches = re.findall(pattern, data)
+				message = None
+				for p in self.patterns:
+					matches = re.findall(p, data)
 					if matches:
-						print("Found match: " + str(pattern))
-						self.respond(response,matches,'john')
+						print("\nFound match: " + str(p))
+						self.respond(self.bindings[p],matches,None)
+						break
 			# Check conditions.
-			for condition, response in self.conditions.iteritems():
-				if condition(): self.respond(response)
+			# for condition, response in self.conditions.iteritems():
+			#	if condition(): self.respond(response)
